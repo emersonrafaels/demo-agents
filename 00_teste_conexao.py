@@ -3,13 +3,17 @@ DEMO 00 — Teste de conexão (rode antes da apresentação)
 
 Faz uma chamada mínima a cada conexão de utils/ e mostra modelo, tempo e tokens.
 
-Executar:  python 00_teste_conexao.py
+Executar:  python 00_teste_conexao.py          (ou --web para abrir o app no navegador)
 """
 
 import time
 
 from utils import PROVEDORES, criar_provedor
-from utils.console import C, titulo
+from utils.console import C, FLAGS, titulo
+from utils.interativo import abrir_web
+
+if "--web" in FLAGS:
+    abrir_web("conexao")
 
 titulo("Teste de conexão com as APIs")
 for nome in ["claude", "gpt", "iara"]:

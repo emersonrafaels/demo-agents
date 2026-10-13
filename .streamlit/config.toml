@@ -1,0 +1,12 @@
+# Configuração do app web das demos (streamlit_app.py)
+
+[server]
+headless = true          # sem a pergunta de e-mail da 1ª execução; quem abre o navegador é utils/interativo.abrir_web
+address = "localhost"    # acessível só nesta máquina
+runOnSave = true
+
+[browser]
+gatherUsageStats = false
+
+[theme]
+primaryColor = "#EC7000"

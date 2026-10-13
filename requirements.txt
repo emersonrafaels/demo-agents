@@ -1,2 +1,4 @@
 anthropic>=0.40   # Claude
 openai>=1.50      # GPT
+python-dotenv>=1.0  # lê o arquivo .env
+streamlit>=1.46  # demo 02 no navegador (--web)

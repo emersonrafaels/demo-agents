@@ -53,9 +53,19 @@ def digitar(texto: str, cor: str = "", velocidade: float = 0.006) -> None:
 
 def pausa(segundos: float = 0.4) -> None:
     if PASSO:
-        input(f"{C.CINZA}   [ENTER para continuar]{C.FIM}")
+        try:
+            input(f"{C.CINZA}   [ENTER para continuar]{C.FIM}")
+        except EOFError:
+            pass
     elif not RAPIDO:
         time.sleep(segundos)
+
+
+def alternar_passo(ativo: bool | None = None) -> bool:
+    """Liga/desliga o modo passo a passo durante a demo."""
+    global PASSO
+    PASSO = (not PASSO) if ativo is None else ativo
+    return PASSO
 
 
 def titulo(texto: str) -> None:

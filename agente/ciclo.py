@@ -25,7 +25,7 @@ from .ferramentas import resumir
 class Agente:
     def __init__(self, provedor, instrucoes: str = instr.BASE, *, memoria=None, ferramentas=None,
                  conhecimento=None, guardrails=None, nome: str = "agente", max_voltas: int = 12,
-                 instrucoes_automaticas: bool = True, verboso: bool = True, recuo: str = "  "):
+                 instrucoes_automaticas: bool = True, verboso: bool = True, recuo: str = "  ", eco=None):
         self.provedor = provedor
         self.memoria = memoria
         self.conhecimento = conhecimento
@@ -39,9 +39,12 @@ class Agente:
         self.max_voltas = max_voltas            # nunca entra em loop infinito
         self.verboso = verboso
         self.recuo = recuo
+        self.eco = eco                          # função(etiqueta, texto): recebe cada etapa (ex.: interface web)
 
     # ------------------------------------------------------------------ utilidades
     def _log(self, etiqueta, cor, texto):
+        if self.eco:
+            self.eco(etiqueta, texto)
         if self.verboso:
             etapa(etiqueta, cor, texto, self.recuo)
 
