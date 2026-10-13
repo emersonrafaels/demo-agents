@@ -1,4 +1,4 @@
-"""console.py — cores, efeito de digitação e opções de linha de comando das demos."""
+"""utils/console.py — cores, efeito de digitação e opções de linha de comando das demos."""
 
 import os
 import sys

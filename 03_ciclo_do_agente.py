@@ -1,26 +1,25 @@
 """
-DEMO 02 — O ciclo do agente, passo a passo (chamadas reais ao Claude e/ou ao GPT)
+DEMO 03 — O ciclo do agente, passo a passo
 
     PERCEBER → PLANEJAR → AGIR → OBSERVAR → (repete) → RESPONDER
 
-Com --provedor ambos, o MESMO agente (mesmas instruções e ferramentas) roda no Claude e no GPT,
-e ao final aparece a comparação: voltas, ferramentas, tokens e tempo.
+Com --provedor ambos, o MESMO agente (mesmas instruções, ferramentas e guardrails) roda no Claude e
+no GPT, e ao final aparece a comparação: voltas, ferramentas, tokens e tempo.
 
 Executar:
-  python 02_ciclo_do_agente.py --provedor claude --passo     (ENTER a cada etapa)
-  python 02_ciclo_do_agente.py --provedor ambos
+  python 03_ciclo_do_agente.py --provedor claude --passo     (ENTER a cada etapa)
+  python 03_ciclo_do_agente.py --provedor ambos
 """
 
-from agente import INSTRUCOES_CONTESTACAO, Agente
-from console import C, opcao, secao, titulo
-from ferramentas import TODAS_CONTESTACAO
-from llm import criar_provedor
+from agente import FERRAMENTAS_CARTAO, Agente, BaseConhecimento, Guardrails, Memoria
+from utils import criar_provedor
+from utils.console import C, opcao, secao, titulo
 
 MENSAGEM = "Não reconheço uma compra de R$ 1.249,90 no meu cartão."
 escolha = (opcao("provedor") or "").lower()
 nomes = ["claude", "gpt"] if escolha == "ambos" else [escolha or None]
 
-titulo("DEMO 02 • O ciclo do agente")
+titulo("DEMO 03 • O ciclo do agente")
 print(f"""
 {C.CINZA}Legenda:{C.FIM}
   {C.AZUL}{C.NEGRITO}PERCEBER{C.FIM}   o que chegou para o agente
@@ -30,10 +29,11 @@ print(f"""
 
 resultados = []
 for nome in nomes:
-    provedor = criar_provedor(nome, opcao("modelo") if len(nomes) == 1 else None)
-    secao(f"Execução • {provedor.nome} ({provedor.modelo})")
-    agente = Agente(provedor, INSTRUCOES_CONTESTACAO, TODAS_CONTESTACAO, nome=f"contestacoes-{provedor.nome}")
-    resultados.append(agente.executar(MENSAGEM, contexto="[cliente_id: C-1001] "))
+    llm = criar_provedor(nome, opcao("modelo") if len(nomes) == 1 else None)
+    secao(f"Execução • {llm.nome} ({llm.modelo})")
+    agente = Agente(llm, memoria=Memoria(), ferramentas=FERRAMENTAS_CARTAO, conhecimento=BaseConhecimento(),
+                    guardrails=Guardrails(cliente_sessao="C-1001"), nome=f"ciclo-{llm.nome}")
+    resultados.append(agente.conversar(MENSAGEM, contexto="[cliente_id: C-1001] "))
 
 secao("Resumo")
 print(f"  {'':<22}" + "".join(f"{r['provedor']:<18}" for r in resultados))
